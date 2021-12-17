@@ -1,0 +1,121 @@
+Lesson #1 - Managing and troubleshooting system boot and services
+-----------------------------------------------------------------
+
+Otázka #1:
+Který systemd target reprezentuje textové multi-uživatelské prostředí?
+multi-user.target
+
+Otázka #2:
+Kterým klíčovým slovem v grub2 scriptu začíná řádek definující kernel a jeho parametry?
+linux
+
+Lesson #2 - Software package management
+---------------------------------------
+
+Otázka #1:
+Zjistěte, jaké symboly (pro splnění závislostí) poskytuje RPM balíček 'ncurses'. Uveďte jak použitý příkaz, tak textový výstup (stačí jen 3 řádky).
+rpm -q --provides ncurses
+ncurses = 6.2-4.20200222.fc34
+ncurses(x86-64) = 6.2-4.20200222.fc34
+
+Otázka #2:
+Vypište soubory obsažené v RPM balíčku 'cowsay', jejichž adresářová cesta začíná na '/usr/bin/'.
+Pokud balíček nemáte nainstalovaný, tak jej nejdříve stáhněte či rovnou nainstalujte.
+Uveďte použité příkazy i požadované tři soubory.
+dnf install cowsay
+rpm -ql cowsay | grep /usr/bin/
+/usr/bin/animalsay
+/usr/bin/cowsay
+/usr/bin/cowthink
+
+Lesson #3 - Creation and basic management of storage
+----------------------------------------------------
+
+Otázka #1:
+Uveďte název nástroje pro správu softwarových RAID polí.
+mdadm
+
+Otázka #2:
+V čem spočívá největší nevýhoda RAID 0 pole?
+Zlyhanie jedného disku spôsobí kompletnú strátu dát.
+
+Lesson #4 - Disk encryption and data backup
+-------------------------------------------
+
+Otázka #1:
+Mějme naformátovaný šifrovaný disk /dev/disk0 s klíčem (ne heslem) uloženým v souboru /root/disk0key. Uveďte příkaz cryptsetup včetně parametrů, kterým přidáte k existujícímu klíči ještě další klíč uložený v souboru /root/disk0key2.
+cryptsetup luksAddKey /dev/disk0 /root/disk0key2
+
+Otázka #2:
+Pomocí příkazu rdiff-backup zálohujete adresář /var/www/html se souborem index.html do adresáře /mnt/backup. Uveďte příkaz, kterým do aktuálního adresáře ze zálohy obnovíte soubor index.html do stavu, ve kterém se nacházel před hodinou.
+rdiff-backup /var/www/html /mnt/backup
+rdiff-backup --restore 1h /mnt/backup/index.html /var/www/html/index.html
+
+Lesson #5 - Network management, security practices, and troubleshooting
+-----------------------------------------------------------------------
+
+Otázka #1:
+Při jaké příležitosti byste pravděpodobně použili příkaz ping? (nápověda: diagnostika stavu sítě).
+Testovanie dostupnosti zariadenia na sieti.
+
+Otázka #2:
+Jakým příkazem do systému přidáte virtuální síťové dummy rozhraní? Jako název dummy rozhraní uveďte v příkazu dummy0. Předpokládejme použití nových nástrojů.
+ip link add dummy0 type dummy up
+
+Lesson #6 - SELinux
+-------------------
+
+Otázka #1:
+Do jakého log souboru se zapisují AVC zprávy v případě běžícího auditd?
+/var/log/audit/audit.log
+
+Otázka #2:
+V jakém SELinux módu je SELinux politika dodržována, včetně případných odmítnutí přístupu?
+Enforcing
+
+Lesson #7 - Linux Containers
+----------------------------
+
+Otázka #1:
+Která direktiva dockerfile určí base image, na kterém bude nový image založen?
+FROM
+
+Otázka #2:
+Jakým příkazem zobrazíte datové vrstvy v image docker.io/library/alpine?
+podman history docker.io/library/alpine
+
+Lesson #8 - Cryptography in GNU/Linux and secured communication
+---------------------------------------------------------------
+
+Otázka #1:
+Pomocí Shared system certificates chcete nakonfigurovat systém tak, aby nadále neakceptoval certifikáty podepsané autoritou s certifikátem uloženým v souboru ca.crt. Uveďte celou cestu k adresáři, do kterého je třeba certifikát uložit. Jaký příkaz je následně třeba spustit, aby byla změna promítnuta do systému?
+/etc/pki/ca-trust/source/blacklist
+update-ca-trust
+
+Otázka #2:
+Z Vašeho lokálního systému se chcete na systém s IP adresou 1.2.3.4 přihlašovat přes SSH bez hesla jako uživatel bob. Váš veřejný klíč je na lokálním systému uložen v souboru /root/.ssh/id_dsa.pub. Uveďte příkaz(y), kterými splníte uvedené zadání. Pro tyto účely předpokládejte, že je Vám heslo uživatele bob známé.
+ssh-copy-id -i /root/.ssh/id_dsa.pub bob@1.2.3.4
+
+Lesson #9 - systemd unit file management
+----------------------------------------
+
+Otázka #1:
+Co musím přidat (a do jaké sekce) do unit file služby, aby se spouštěla při běžném startu systému?
+[Install]
+WantedBy=multi-user.target
+
+Otázka #2:
+Jak odstraním všechny změny provedené v systémovém unit file služby sshd?
+systemctl revert sshd.unit
+
+Lesson #10 - Containerization of Linux Applications
+---------------------------------------------------
+
+Otázka #1:
+V jakém adresáři ukládá podman volumes vytvořené a spravované pomocí příkazu “podman volume”?
+/var/lib/containers/storage/volumes
+
+Otázka #2:
+Jaké parametry pro podman run zajistí, že adresář /home/data bude přístupný z kontejneru pod cestou /data?
+--volume=/home/data:/data/:rw,z
+
